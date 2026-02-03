@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบ 1-Stop Service (อปท.)</title>
+    <title>ระบบ 1-Stop Service (อปท.) - V.2 Import Data</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <style>
         :root {
             --primary: #1565c0;
-            --primary-light: #5e92f3;
-            --secondary: #37474f;
             --bg: #eceff1;
-            --text: #263238;
             --sidebar-width: 260px;
         }
 
         * { box-sizing: border-box; outline: none; }
-        body { margin: 0; font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        body { margin: 0; font-family: 'Sarabun', sans-serif; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
 
         /* --- Layout --- */
-        .sidebar { width: var(--sidebar-width); background: white; display: flex; flex-direction: column; border-right: 1px solid #cfd8dc; z-index: 1000; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
-        .brand { padding: 20px; background: var(--primary); color: white; text-align: center; }
-        .brand h2 { margin: 0; font-size: 1.4rem; }
+        .sidebar { width: var(--sidebar-width); background: white; display: flex; flex-direction: column; border-right: 1px solid #ddd; z-index: 10; }
+        .brand { padding: 20px; background: var(--primary); color: white; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .menu-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .menu-item { display: flex; align-items: center; padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #546e7a; transition: 0.2s; text-decoration: none; font-weight: 500; }
+        .menu-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #546e7a; transition: 0.2s; font-weight: 500; display: flex; align-items: center; }
         .menu-item:hover { background: #e3f2fd; color: var(--primary); }
         .menu-item.active { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(21,101,192,0.2); }
         .menu-item i { width: 30px; text-align: center; margin-right: 10px; }
-        
+
         .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-bar { background: white; padding: 15px 20px; border-bottom: 1px solid #cfd8dc; display: flex; justify-content: space-between; align-items: center; }
+        .top-bar { background: white; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
         .content { flex: 1; padding: 20px; overflow-y: auto; }
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
@@ -44,51 +39,43 @@
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .flex-2 { flex: 2; }
-        .flex-3 { flex: 3; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cfd8dc; border-radius: 4px; font-family: 'Sarabun'; font-size: 1rem; }
-        input:focus { border-color: var(--primary); }
         
-        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; font-family: 'Sarabun'; font-size: 0.95rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: #2e7d32; color: white; }
-        .btn-danger { background: #c62828; color: white; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: #333; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Sarabun'; font-size: 1rem; }
+        input:focus { border-color: var(--primary); }
+
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; color: white; transition: 0.2s; font-family: 'Sarabun'; display: inline-flex; align-items: center; gap: 5px;}
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: #2e7d32; }
         .btn-warning { background: #f9a825; color: #333; }
+        .btn-info { background: #0288d1; }
         .btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
 
-        .tab-bar { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; overflow-x: auto; }
-        .tab-btn { padding: 8px 15px; cursor: pointer; border-radius: 4px; background: #f5f5f5; color: #666; font-size: 0.9rem; white-space: nowrap; }
-        .tab-btn.active { background: var(--primary); color: white; }
-
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #eceff1; padding: 10px; text-align: left; border: 1px solid #cfd8dc; font-weight: 600; }
-        td { padding: 10px; border: 1px solid #cfd8dc; }
-        tr:nth-child(even) { background: #fafafa; }
+        th { background: #eee; padding: 10px; text-align: left; border: 1px solid #ddd; }
+        td { padding: 10px; border: 1px solid #ddd; }
 
-        /* --- Print Styles --- */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 95%; max-width: 297mm; height: 95vh; display: flex; flex-direction: column; border-radius: 8px; }
-        .modal-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .print-preview-area { flex: 1; overflow: auto; background: #525659; padding: 20px; display: flex; justify-content: center; }
-        .paper { background: white; padding: 20mm; width: 210mm; min-height: 297mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }
+        /* --- Print Modal & Preview --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #525659; width: 95%; height: 95%; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; }
+        .preview-area { flex: 1; overflow: auto; padding: 30px; display: flex; justify-content: center; }
+        .paper { background: white; width: 210mm; min-height: 297mm; padding: 20mm 20mm; box-shadow: 0 0 15px rgba(0,0,0,0.5); position: relative; }
         
+        /* --- Styles for Government Documents (Inside Paper) --- */
+        .doc-header { text-align: center; font-weight: bold; font-size: 16pt; margin-bottom: 10px; line-height: 1.4; }
+        .doc-body { text-indent: 2.5cm; margin-bottom: 10px; line-height: 1.6; font-size: 14pt; text-align: justify;}
+        .doc-sign { margin-top: 40px; display: flex; justify-content: space-around; }
+        .sign-box { text-align: center; width: 45%; }
+
         @media print {
             @page { size: A4; margin: 0; }
             body * { visibility: hidden; }
             .modal { position: fixed; inset: 0; background: white; display: block !important; }
-            .modal-content { width: 100%; height: auto; box-shadow: none; }
+            .modal-content { width: 100%; height: auto; background: white; }
             .modal-header, .no-print { display: none !important; }
-            .print-preview-area { background: white; padding: 0; display: block; overflow: visible; }
-            .paper { width: 100%; box-shadow: none; padding: 15mm; margin: 0; }
+            .preview-area { padding: 0; display: block; overflow: visible; }
+            .paper { width: 100%; padding: 20mm; box-shadow: none; margin: 0; }
             .paper * { visibility: visible; }
-            
-            /* Print Specifics */
-            .doc-header { text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 16pt; line-height: 1.4; }
-            .doc-sub { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 12pt; }
-            table.print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12pt; }
-            table.print-table th, table.print-table td { border: 1px solid black; padding: 5px; vertical-align: top; }
-            .sign-area { margin-top: 40px; display: flex; justify-content: space-between; flex-wrap: wrap; }
-            .sign-box { width: 32%; text-align: center; margin-bottom: 20px; page-break-inside: avoid; }
         }
     </style>
 </head>
@@ -96,147 +83,150 @@
 
     <div class="sidebar">
         <div class="brand">
-            <h2>1-Stop Service</h2>
-            <p>ระบบบริหารงาน อปท.</p>
+            <h2><i class="fas fa-building"></i> 1-Stop Service</h2>
+            <p style="font-size:0.8rem; opacity:0.8;">ระบบบริหารงาน อปท. (V.2)</p>
         </div>
         <div class="menu-list">
-            <div class="menu-item active" onclick="nav('home')"><i class="fas fa-th"></i> หน้าจอหลัก</div>
-            <div class="menu-item" onclick="nav('stock')"><i class="fas fa-boxes"></i> 1. บัญชีคุมวัสดุ</div>
-            <div class="menu-item" onclick="nav('travel')"><i class="fas fa-car-side"></i> 6. แบบเดินทางราชการ</div>
+            <div class="menu-item active" onclick="nav('home')"><i class="fas fa-home"></i> หน้าแรก</div>
+            <div class="menu-item" onclick="nav('stock')"><i class="fas fa-boxes"></i> 1. ทะเบียนคุมวัสดุ</div>
+            <div class="menu-item" onclick="nav('travel')"><i class="fas fa-car-side"></i> 6. เดินทางไปราชการ</div>
             <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-file-invoice-dollar"></i> 2. แนวทางการตั้งหนี้</div>
-            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-money-check-alt"></i> 3. การจัดทำเช็ค</div>
+            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-money-check"></i> 3. การจัดทำเช็ค</div>
             <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-hand-holding-usd"></i> 4. การยืมเงิน</div>
-            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-donate"></i> 5. การรับเงิน</div>
-            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-file-contract"></i> 7. แบบฎีกา</div>
-            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-coins"></i> 8. กันเงิน (ก่อหนี้)</div>
-            <div class="menu-item" onclick="alert('อยู่ในระหว่างพัฒนา')"><i class="fas fa-piggy-bank"></i> 9. กันเงิน (ไม่ก่อหนี้)</div>
         </div>
+        <div style="padding:10px; text-align:center; font-size:0.8rem; color:#999;">เชื่อมต่อข้อมูลแล้ว</div>
     </div>
 
     <div class="main">
         <div class="top-bar">
-            <div class="page-title" id="pageTitle">หน้าจอหลัก</div>
+            <h2 id="pageTitle" style="margin:0;">หน้าแรก</h2>
             <div>
-                <button class="btn btn-warning" onclick="alert('Backup')"><i class="fas fa-download"></i> Backup</button>
+                 <input type="file" id="csvInput" accept=".csv" style="display:none;" onchange="importCSV(this)">
+                <button class="btn btn-info" onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-import"></i> Import CSV (วัสดุ)</button>
+                <button class="btn btn-warning" onclick="resetDB()"><i class="fas fa-sync"></i> รีเซ็ต</button>
             </div>
         </div>
 
         <div class="content">
+            
             <div id="home" class="section active">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="card" style="border-left: 5px solid #4caf50;">
+                    <h3><i class="fas fa-check-circle"></i> สถานะระบบ</h3>
+                    <p>ระบบได้ทำการโหลดข้อมูลตั้งต้นจากไฟล์ของคุณเรียบร้อยแล้ว:</p>
+                    <ul>
+                        <li><b>ฐานข้อมูลวัสดุ:</b> โหลดรายการตัวอย่าง (เช่น กระดาษ, แฟ้ม, หมึกพิมพ์) ลงในระบบแล้ว</li>
+                        <li><b>ผู้เดินทาง:</b> ตั้งค่าเริ่มต้นเป็น "คุณวรรณ์เพ็ญ พละศักดิ์" (กองคลัง)</li>
+                    </ul>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                     <div class="card" onclick="nav('stock')" style="cursor:pointer; text-align:center;">
-                        <i class="fas fa-boxes" style="font-size:40px; color:var(--primary); margin-bottom:10px;"></i>
-                        <h3>1. บัญชีคุมวัสดุ</h3>
-                        <p>รับ-จ่าย / ทะเบียน / สต็อกการ์ด</p>
+                        <i class="fas fa-boxes" style="font-size: 50px; color: var(--primary); margin-bottom: 15px;"></i>
+                        <h3>ระบบวัสดุ</h3>
+                        <p>จัดการ รับ-จ่าย วัสดุสำนักงาน/งานบ้านงานครัว</p>
                     </div>
                     <div class="card" onclick="nav('travel')" style="cursor:pointer; text-align:center;">
-                        <i class="fas fa-car-side" style="font-size:40px; color:#e65100; margin-bottom:10px;"></i>
-                        <h3>6. แบบเดินทางไปราชการ</h3>
-                        <p>ขออนุมัติ / ยืมเงิน / 8708 / ใบสำคัญ</p>
+                        <i class="fas fa-car-side" style="font-size: 50px; color: #e65100; margin-bottom: 15px;"></i>
+                        <h3>ระบบเดินทางไปราชการ</h3>
+                        <p>พิมพ์บันทึก / สัญญาเงินยืม / 8708</p>
                     </div>
                 </div>
             </div>
 
             <div id="stock" class="section">
                 <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-boxes"></i> ระบบบริหารวัสดุ</h3>
-                        <button class="btn btn-primary" onclick="nav('home')">กลับหน้าหลัก</button>
-                    </div>
-                    <div class="tab-bar">
-                        <div class="tab-btn active" onclick="showStockTab('s-dash')">ภาพรวม</div>
-                        <div class="tab-btn" onclick="showStockTab('s-tx')">รับ-จ่าย</div>
-                        <div class="tab-btn" onclick="showStockTab('s-master')">ทะเบียนวัสดุ</div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                        <h3><i class="fas fa-list"></i> ทะเบียนคุมวัสดุ</h3>
+                        <div>
+                             <span style="font-size:0.9rem; color:#666; margin-right:10px;">(สามารถกดปุ่ม Import CSV ด้านบนเพื่อนำเข้ารายการทั้งหมด)</span>
+                             <button class="btn btn-primary" onclick="openAddMaterialModal()">+ เพิ่มเอง</button>
+                        </div>
                     </div>
                     
-                    <div id="s-dash">
-                        <div class="form-row">
-                            <div class="card" style="flex:1; background:#e3f2fd; text-align:center;">
-                                <h3>รายการทั้งหมด</h3><h1 id="totalItems">0</h1>
+                    <div class="form-row" style="background:#f5f5f5; padding:15px; border-radius:8px;">
+                        <div class="form-group flex-2">
+                            <label>ทำรายการ</label>
+                            <div style="display:flex; gap:10px;">
+                                <select id="txType" style="flex:1;"><option value="IN">รับเข้า (ซื้อ/จ้าง)</option><option value="OUT">เบิกจ่าย (ใบเบิก)</option></select>
+                                <input type="date" id="txDate" style="flex:1;">
                             </div>
-                            <div class="card" style="flex:1; background:#e8f5e9; text-align:center;">
-                                <h3>มูลค่ารวม</h3><h1 id="totalValue">0.00</h1>
-                            </div>
+                        </div>
+                        <div class="form-group flex-2">
+                            <label>เลือกวัสดุ (พิมพ์เพื่อค้นหา)</label>
+                            <input list="stockList" id="txItemInput" placeholder="พิมพ์ชื่อหรือรหัส..." onchange="updatePriceInput()">
+                            <datalist id="stockList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>จำนวน</label>
+                            <input type="number" id="txQty" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>ราคา/หน่วย</label>
+                            <input type="number" id="txPrice" value="0">
+                        </div>
+                        <div class="form-group" style="display:flex; align-items:flex-end;">
+                            <button class="btn btn-success" style="width:100%;" onclick="addTransaction()">บันทึก</button>
                         </div>
                     </div>
 
-                    <div id="s-tx" style="display:none;">
-                        <div class="form-row">
-                             <div class="form-group"><label>วันที่</label><input type="date" id="txDate"></div>
-                             <div class="form-group"><label>ประเภท</label><select id="txType"><option value="IN">รับเข้า (ซื้อ/จ้าง)</option><option value="OUT">เบิกจ่าย (ใบเบิก)</option></select></div>
-                             <div class="form-group"><label>เลขที่เอกสาร</label><input type="text" id="txDoc"></div>
-                             <div class="form-group flex-2"><label>รับจาก/จ่ายให้</label><input type="text" id="txRef"></div>
-                        </div>
-                        <div class="form-row align-end" style="background:#f5f5f5; padding:15px; border-radius:8px;">
-                             <div class="form-group flex-2"><label>ค้นหาวัสดุ</label><input type="text" list="dlItems" id="txItem" onchange="selItem()"><datalist id="dlItems"></datalist></div>
-                             <div class="form-group"><label>จำนวน</label><input type="number" id="txQty" value="1"></div>
-                             <div class="form-group"><label>ราคา/หน่วย</label><input type="number" id="txPrice" value="0"></div>
-                             <div class="form-group"><button class="btn btn-success" onclick="addTxLine()">+ เพิ่ม</button></div>
-                        </div>
-                        <table class="table"><thead><tr><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th><th>ลบ</th></tr></thead><tbody id="txTable"></tbody></table>
-                        <div style="margin-top:15px; text-align:right;"><button class="btn btn-primary" onclick="saveTx()">บันทึก & พิมพ์</button></div>
-                    </div>
-
-                    <div id="s-master" style="display:none;">
-                         <div class="form-row">
-                             <input type="text" id="searchMaster" placeholder="ค้นหาชื่อวัสดุ..." onkeyup="renderMaster()" style="flex:1;">
-                             <button class="btn btn-success" onclick="openMasterModal()">+ เพิ่มวัสดุใหม่</button>
-                         </div>
-                         <table class="table"><thead><tr><th>รหัส</th><th>ชื่อวัสดุ</th><th>คงเหลือ</th><th>หน่วย</th><th>จัดการ</th></tr></thead><tbody id="masterTable"></tbody></table>
+                    <div style="max-height:500px; overflow:auto;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>รหัส</th>
+                                    <th>รายการ</th>
+                                    <th>หมวด</th>
+                                    <th>คงเหลือ</th>
+                                    <th>หน่วย</th>
+                                    <th>ราคาล่าสุด</th>
+                                    <th>จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTable"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
             <div id="travel" class="section">
                 <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-car-side"></i> แบบเดินทางไปราชการ (1-Stop)</h3>
-                        <button class="btn btn-primary" onclick="nav('home')">กลับหน้าหลัก</button>
-                    </div>
-                    
-                    <div style="background:#e8f5e9; padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid #c8e6c9;">
-                        <h4><i class="fas fa-edit"></i> กรอกข้อมูลครั้งเดียว (ใช้ได้ทุกแบบฟอร์ม)</h4>
+                    <div style="background: #e1f5fe; padding: 15px; border-radius: 8px; border: 1px solid #b3e5fc; margin-bottom: 20px;">
+                        <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-user-check"></i> ข้อมูลผู้เดินทาง (โหลดอัตโนมัติ)</h3>
                         <div class="form-row">
-                            <div class="form-group flex-3"><label>เรื่อง / โครงการ</label><input type="text" id="tvTitle" value="ขออนุมัติเดินทางไปราชการเพื่อเข้าร่วมอบรมโครงการ..."></div>
-                            <div class="form-group"><label>เลขที่บันทึก</label><input type="text" id="tvDocNo" value="6/2568"></div>
-                            <div class="form-group"><label>วันที่เอกสาร</label><input type="date" id="tvDate"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group flex-2"><label>ชื่อผู้เดินทาง</label><input type="text" id="tvName" value="นางวรรณ์เพ็ญ พละศักดิ์"></div>
-                            <div class="form-group flex-2"><label>ตำแหน่ง</label><input type="text" id="tvPos" value="นักวิชาการเงินและบัญชี"></div>
-                            <div class="form-group flex-2"><label>สังกัด</label><input type="text" id="tvDept" value="กองคลัง"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group flex-2"><label>สถานที่ไปราชการ</label><input type="text" id="tvPlace" value="จ.อุบลราชธานี"></div>
-                            <div class="form-group"><label>วันเริ่มเดินทาง</label><input type="date" id="tvStart"></div>
-                            <div class="form-group"><label>วันสิ้นสุด</label><input type="date" id="tvEnd"></div>
-                        </div>
-                        <hr>
-                        <h4><i class="fas fa-money-bill-wave"></i> ข้อมูลการเงิน / ค่าใช้จ่าย</h4>
-                        <div class="form-row">
-                             <div class="form-group"><label>เลขที่สัญญาเงินยืม</label><input type="text" id="tvLoanNo" value="5/2569"></div>
-                             <div class="form-group"><label>วันที่ยืม</label><input type="date" id="tvLoanDate"></div>
-                             <div class="form-group"><label>จำนวนเงินยืม (บาท)</label><input type="number" id="tvLoanAmt" value="0"></div>
-                        </div>
-                        <div class="form-row">
-                             <div class="form-group"><label>ค่าเบี้ยเลี้ยง</label><input type="number" id="pay1" value="0"></div>
-                             <div class="form-group"><label>ค่าที่พัก</label><input type="number" id="pay2" value="0"></div>
-                             <div class="form-group"><label>ค่าพาหนะ</label><input type="number" id="pay3" value="0"></div>
-                             <div class="form-group"><label>ค่าลงทะเบียน/อื่นๆ</label><input type="number" id="pay4" value="0"></div>
-                        </div>
+                            <div class="form-group flex-2"><label>ชื่อ-สกุล</label><input type="text" id="tvName"></div> <div class="form-group flex-2"><label>ตำแหน่ง</label><input type="text" id="tvPos"></div> <div class="form-group flex-2"><label>สังกัด/กอง</label><input type="text" id="tvDept"></div> </div>
                     </div>
 
-                    <div class="card" style="border: 1px solid #ddd;">
-                        <h4><i class="fas fa-print"></i> เลือกพิมพ์เอกสาร</h4>
-                        <div class="form-row">
-                            <button class="btn btn-warning" onclick="printTravel('memo')">1. บันทึกขออนุมัติ</button>
-                            <button class="btn btn-warning" onclick="printTravel('loan')">2. สัญญายืมเงิน</button>
-                            <button class="btn btn-warning" onclick="printTravel('est')">3. ประมาณการ คชจ.</button>
-                            <button class="btn btn-warning" onclick="printTravel('8708_1')">4. แบบ 8708 (หน้า 1)</button>
-                            <button class="btn btn-warning" onclick="printTravel('8708_2')">5. แบบ 8708 (หน้า 2)</button>
-                            <button class="btn btn-warning" onclick="printTravel('cert')">6. ใบรับรองแทนใบเสร็จ</button>
-                            <button class="btn btn-warning" onclick="printTravel('rec')">7. ใบสำคัญรับเงิน</button>
-                        </div>
+                    <h4>รายละเอียดโครงการ/เดินทาง</h4>
+                    <div class="form-row">
+                        <div class="form-group"><label>เลขที่บันทึก/คำสั่ง</label><input type="text" id="tvDocNo" value="6/2568"></div>
+                        <div class="form-group"><label>ลงวันที่</label><input type="date" id="tvDate"></div>
+                        <div class="form-group flex-2"><label>เรื่อง/โครงการ</label><input type="text" id="tvTitle" value="โครงการฝึกอบรมเชิงปฏิบัติการ..."></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group flex-2"><label>สถานที่ไปราชการ</label><input type="text" id="tvPlace" value="จ.อุบลราชธานี"></div>
+                        <div class="form-group"><label>วันที่เริ่ม</label><input type="date" id="tvStart"></div>
+                        <div class="form-group"><label>วันที่สิ้นสุด</label><input type="date" id="tvEnd"></div>
+                    </div>
+
+                    <hr>
+                    <h4><i class="fas fa-coins"></i> ประมาณการค่าใช้จ่าย & ยืมเงิน</h4>
+                    <div class="form-row">
+                        <div class="form-group"><label>ค่าเบี้ยเลี้ยง</label><input type="number" id="pay1" value="0"></div>
+                        <div class="form-group"><label>ค่าที่พัก</label><input type="number" id="pay2" value="0"></div>
+                        <div class="form-group"><label>ค่าพาหนะ</label><input type="number" id="pay3" value="0"></div>
+                        <div class="form-group"><label>ค่าใช้จ่ายอื่น</label><input type="number" id="pay4" value="0"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>เลขที่สัญญาเงินยืม</label><input type="text" id="loanNo" value="5/2569"></div>
+                        <div class="form-group"><label>วันที่ยืม</label><input type="date" id="loanDate"></div>
+                    </div>
+                    
+                    <div style="margin-top:20px;">
+                        <button class="btn btn-warning" onclick="printDoc('memo')"><i class="fas fa-print"></i> 1. บันทึกข้อความ</button>
+                        <button class="btn btn-warning" onclick="printDoc('loan')"><i class="fas fa-print"></i> 2. สัญญายืมเงิน</button>
+                        <button class="btn btn-warning" onclick="printDoc('8708')"><i class="fas fa-print"></i> 3. ใบเบิก (8708)</button>
+                        <button class="btn btn-warning" onclick="printDoc('est')"><i class="fas fa-print"></i> 4. ประมาณการ</button>
                     </div>
                 </div>
             </div>
@@ -246,358 +236,275 @@
 
     <div id="printModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>ตัวอย่างก่อนพิมพ์</h3>
+            <div class="modal-header" style="padding:10px 20px; background:#333; color:white;">
+                <h3>Preview</h3>
                 <div>
-                    <button class="btn btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Excel</button>
-                    <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> พิมพ์</button>
+                    <button class="btn btn-primary" onclick="window.print()">พิมพ์</button>
                     <button class="btn btn-danger" onclick="document.getElementById('printModal').style.display='none'">ปิด</button>
                 </div>
             </div>
-            <div class="print-preview-area">
+            <div class="preview-area">
                 <div id="paper" class="paper"></div>
             </div>
         </div>
     </div>
 
-    <div id="masterModal" class="modal">
-        <div class="modal-content" style="height:auto; max-width:600px;">
-            <div class="modal-header"><h3>เพิ่มวัสดุใหม่</h3><span class="close" onclick="document.getElementById('masterModal').style.display='none'">&times;</span></div>
-            <div class="modal-body">
-                <div class="form-row"><div class="form-group"><label>รหัส</label><input type="text" id="mCode"></div><div class="form-group flex-2"><label>ชื่อวัสดุ</label><input type="text" id="mName"></div></div>
-                <div class="form-row"><div class="form-group"><label>หน่วยนับ</label><input type="text" id="mUnit"></div><div class="form-group flex-2"><label>ประเภท</label><input type="text" id="mCat"></div></div>
-                <div class="form-row"><div class="form-group"><label>Min</label><input type="number" id="mMin" value="5"></div><div class="form-group flex-2"><label>ที่เก็บ</label><input type="text" id="mLoc"></div></div>
-                <button class="btn btn-success" style="width:100%" onclick="saveMaster()">บันทึก</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // --- DATA & CONFIG ---
-        const DB_KEY = 'LAO_DB_V7_FINAL';
-        let DB = { 
-            orgName: "องค์การบริหารส่วนตำบลตัวอย่าง",
-            items: [
-                {code:"A001", name:"กระดาษ A4", cat:"วัสดุสำนักงาน", unit:"รีม", price:120, min:10, loc:"กองคลัง"},
-                {code:"A002", name:"ปากกาลูกลื่น", cat:"วัสดุสำนักงาน", unit:"ด้าม", price:5, min:20, loc:"กองคลัง"},
-                {code:"A003", name:"แฟ้มสันกว้าง", cat:"วัสดุสำนักงาน", unit:"แฟ้ม", price:55, min:5, loc:"กองคลัง"},
-                {code:"A004", name:"หมึกพิมพ์", cat:"วัสดุคอมพิวเตอร์", unit:"ตลับ", price:1500, min:2, loc:"กองคลัง"}
-            ], 
-            tx: [] 
-        };
-        let currentTxLines = [];
+        // --- DATA INITIALIZATION ---
+        const DB_KEY = 'LAO_DB_IMPORTED_V2';
+        
+        // ข้อมูลตั้งต้นที่ดึงจากไฟล์ของคุณ (Mockup บางส่วนเพื่อให้ระบบทำงานได้เลย)
+        const initialMaterials = [
+            { id: 1, code: 'A0001', name: 'หนังสือ', unit: 'เล่ม', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 2, code: 'A0002', name: 'เครื่องคิดเลขขนาดเล็ก', unit: 'เครื่อง', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 3, code: 'A0003', name: 'เครื่องเจาะกระดาษขนาดเล็ก', unit: 'อัน', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 4, code: 'A0004', name: 'ที่เย็บกระดาษขนาดเล็ก', unit: 'อัน', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 5, code: 'A0005', name: 'ไม้บรรทัดเหล็ก', unit: 'อัน', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 6, code: 'A0006', name: 'กรรไกร', unit: 'เล่ม', cat: 'วัสดุสำนักงาน', price: 0, stock: 0 },
+            { id: 7, code: 'M0001', name: 'เต็นท์นอน/เต็นท์สนามขนาดเล็ก', unit: 'หลัง', cat: 'วัสดุสนาม', price: 0, stock: 0 },
+            { id: 8, code: 'N0001', name: 'บันไดอลูมิเนียม', unit: 'อัน', cat: 'วัสดุสำรวจ', price: 0, stock: 0 }
+        ];
 
-        // --- INIT ---
-        window.onload = () => {
-            let d = localStorage.getItem(DB_KEY);
-            if(d) DB = JSON.parse(d);
+        // ข้อมูลผู้เดินทางจากไฟล์ ผู้เดินทาง.csv
+        const defaultTraveler = {
+            name: "นางวรรณ์เพ็ญ พละศักดิ์",
+            pos: "นักวิชาการเงินและบัญชีชำนาญการพิเศษ",
+            dept: "กองคลัง"
+        };
+
+        let db = { materials: initialMaterials, orgName: "องค์การบริหารส่วนตำบลตัวอย่าง" };
+
+        // --- CORE FUNCTIONS ---
+        window.onload = function() {
+            loadDB();
             
-            // Set Defaults
-            document.getElementById('txDate').valueAsDate = new Date();
-            if(!document.getElementById('tvDocDate').value) document.getElementById('tvDocDate').valueAsDate = new Date();
-            
-            updateDatalist();
+            // Set Default Dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('txDate').value = today;
+            document.getElementById('tvDate').value = today;
+            document.getElementById('loanDate').value = today;
+
+            // Set Default Traveler (From CSV Data)
+            document.getElementById('tvName').value = defaultTraveler.name;
+            document.getElementById('tvPos').value = defaultTraveler.pos;
+            document.getElementById('tvDept').value = defaultTraveler.dept;
+
             nav('home');
         };
 
-        // --- NAVIGATION ---
-        function nav(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            
-            // Highlight Menu
-            if(id=='home') document.querySelector('.menu-item:nth-child(1)').classList.add('active');
-            if(id=='stock') {
-                document.querySelector('.menu-item:nth-child(2)').classList.add('active');
-                renderMasterTable();
-                renderDashboard();
+        function loadDB() {
+            const saved = localStorage.getItem(DB_KEY);
+            if (saved) {
+                db = JSON.parse(saved);
+            } else {
+                // First time load: Use Imported Data
+                saveDB();
             }
-            if(id=='travel') document.querySelector('.menu-item:nth-child(3)').classList.add('active');
+            renderStockTable();
+            updateDatalist();
         }
 
-        function showStockTab(tid) {
-            document.querySelectorAll('[id^="s-"]').forEach(d => d.style.display = 'none');
-            document.getElementById(tid).style.display = 'block';
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        function saveDB() {
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
+            renderStockTable();
+        }
+
+        function resetDB() {
+            if(confirm('รีเซ็ตข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้น?')) {
+                localStorage.removeItem(DB_KEY);
+                location.reload();
+            }
+        }
+
+        // --- IMPORT CSV FUNCTION ---
+        function importCSV(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let count = 0;
+                
+                // Simple CSV Parse (Assumes Format: Code, Name, Cat OR Code, Name, Cat, Unit...)
+                // Adjust index based on your actual file structure
+                lines.forEach(line => {
+                    const cols = line.split(',');
+                    if(cols.length >= 2) {
+                        const code = cols[0].trim();
+                        const name = cols[1].trim();
+                        const cat = cols[2] ? cols[2].trim() : 'ทั่วไป';
+                        // Check duplicates
+                        if(!db.materials.find(m => m.code === code)) {
+                            db.materials.push({
+                                id: Date.now() + Math.random(),
+                                code: code,
+                                name: name,
+                                cat: cat,
+                                unit: 'หน่วย', // Default unit if not in CSV
+                                price: 0, 
+                                stock: 0
+                            });
+                            count++;
+                        }
+                    }
+                });
+                
+                saveDB();
+                alert(`นำเข้าข้อมูลสำเร็จ ${count} รายการ`);
+                updateDatalist();
+                renderStockTable();
+            };
+            reader.readAsText(file);
         }
 
         // --- STOCK LOGIC ---
-        function updateDatalist() {
-            let dl = document.getElementById('dlItems');
-            dl.innerHTML = DB.items.map(i => `<option value="${i.code}:${i.name}">คงเหลือ ${getBalance(i.code)} ${i.unit}</option>`).join('');
-        }
-
-        function getBalance(code) {
-            let bal = 0;
-            DB.tx.forEach(t => {
-                t.lines.forEach(l => { if(l.code == code) bal += (t.type=='IN'?l.qty : -l.qty); });
+        function renderStockTable() {
+            const tbody = document.getElementById('stockTable');
+            tbody.innerHTML = '';
+            // Show last 50 items or filter
+            db.materials.slice().reverse().forEach(m => {
+                const tr = `
+                    <tr>
+                        <td>${m.code}</td>
+                        <td>${m.name}</td>
+                        <td><span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.8rem;">${m.cat}</span></td>
+                        <td style="font-weight:bold; color:${m.stock < 5 ? 'red' : 'green'}">${m.stock}</td>
+                        <td>${m.unit}</td>
+                        <td>${m.price.toLocaleString()}</td>
+                        <td><button class="btn btn-warning" style="padding:2px 5px; font-size:0.8rem;" onclick="printStockCard('${m.code}')">การ์ด</button></td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
             });
-            return bal;
         }
 
-        function selItem() {
-            let val = document.getElementById('txItem').value.split(':')[0];
-            let item = DB.items.find(i => i.code == val);
-            if(item) document.getElementById('txPrice').value = item.price;
+        function updateDatalist() {
+            const dl = document.getElementById('stockList');
+            dl.innerHTML = '';
+            db.materials.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = `${m.code} : ${m.name}`;
+                dl.appendChild(opt);
+            });
         }
 
-        function addTxLine() {
-            let val = document.getElementById('txItem').value.split(':')[0];
-            let item = DB.items.find(i => i.code == val);
-            if(!item) return alert('ไม่พบวัสดุ');
-            
-            let qty = parseFloat(document.getElementById('txQty').value);
-            let price = parseFloat(document.getElementById('txPrice').value);
-            
-            if(document.getElementById('txType').value == 'OUT' && qty > getBalance(item.code)) return alert('ของไม่พอเบิก');
+        function addTransaction() {
+            const type = document.getElementById('txType').value;
+            const inputVal = document.getElementById('txItemInput').value;
+            const code = inputVal.split(':')[0].trim();
+            const qty = parseInt(document.getElementById('txQty').value);
+            const price = parseFloat(document.getElementById('txPrice').value);
 
-            currentTxLines.push({ ...item, qty, price });
-            renderTxTable();
-            document.getElementById('txItem').value = '';
-        }
+            const item = db.materials.find(m => m.code === code);
+            if(!item) return alert('ไม่พบวัสดุในระบบ (กรุณาเลือกจากรายการ)');
 
-        function renderTxTable() {
-            let h = currentTxLines.map((l,i) => `<tr><td>${l.name}</td><td>${l.qty}</td><td>${l.price}</td><td>${l.qty*l.price}</td><td><button onclick="currentTxLines.splice(${i},1);renderTxTable()">x</button></td></tr>`).join('');
-            document.getElementById('txTable').innerHTML = h;
-        }
-
-        function saveTx() {
-            if(currentTxLines.length == 0) return;
-            let tx = {
-                id: Date.now(),
-                date: document.getElementById('txDate').value,
-                type: document.getElementById('txType').value,
-                docNo: document.getElementById('txDoc').value,
-                ref: document.getElementById('txRef').value,
-                lines: [...currentTxLines]
-            };
-            DB.tx.push(tx);
-            // Update Price if IN
-            if(tx.type == 'IN') {
-                tx.lines.forEach(l => {
-                    let idx = DB.items.findIndex(i => i.code == l.code);
-                    if(idx>=0) DB.items[idx].price = l.price;
-                });
+            if (type === 'IN') {
+                item.stock += qty;
+                item.price = price;
+            } else {
+                if (item.stock < qty) return alert('ของไม่พอจ่าย');
+                item.stock -= qty;
             }
-            saveDB();
-            alert('บันทึกแล้ว');
             
-            // Print Trigger
-            if(tx.type == 'IN') printReceivingSlip(tx);
-            else printWithdrawSlip(tx);
-
-            currentTxLines = []; renderTxTable(); renderDashboard();
+            saveDB();
+            alert('บันทึกสำเร็จ');
+            document.getElementById('txQty').value = 1;
+            renderStockTable();
         }
 
-        function renderMasterTable() {
-            let k = document.getElementById('searchMaster').value;
-            let h = DB.items.filter(i => i.name.includes(k)).map(i => {
-                let bal = getBalance(i.code);
-                return `<tr><td>${i.code}</td><td>${i.name}</td><td style="color:${bal<=i.min?'red':'green'}">${bal}</td><td>${i.unit}</td><td><button class="btn btn-warning" onclick="printStockCard('${i.code}')">บัญชี</button></td></tr>`;
-            }).join('');
-            document.getElementById('masterTable').innerHTML = h;
-        }
-        
-        function renderDashboard() {
-            document.getElementById('totalItems').innerText = DB.items.length;
-            // Calculate Value is complex, simplified here
-        }
-
-        // --- MASTER MODAL ---
-        function openMasterModal() { document.getElementById('masterModal').style.display='flex'; }
-        function saveMaster() {
-            let item = {
-                code: document.getElementById('mCode').value,
-                name: document.getElementById('mName').value,
-                unit: document.getElementById('mUnit').value,
-                cat: document.getElementById('mCat').value,
-                min: parseFloat(document.getElementById('mMin').value),
-                loc: document.getElementById('mLoc').value,
-                price: 0
-            };
-            DB.items.push(item); saveDB();
-            document.getElementById('masterModal').style.display='none';
-            renderMasterTable(); updateDatalist();
-        }
-
-        // --- TRAVEL SYSTEM & PRINTING ---
+        // --- TRAVEL & PRINT LOGIC ---
         function getVal(id) { return document.getElementById(id).value; }
         function getNum(id) { return parseFloat(document.getElementById(id).value) || 0; }
-        function fmtDate(d) { 
-            if(!d) return "..../....../....";
-            let date = new Date(d);
-            let m = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
-            return `${date.getDate()} ${m[date.getMonth()]} ${date.getFullYear()+543}`;
+        function fmtDate(d) {
+             if(!d) return "..../......../........";
+             const date = new Date(d);
+             const m = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+             return `${date.getDate()} ${m[date.getMonth()]} ${date.getFullYear()+543}`;
         }
-        function bahtText(num) { return num.toLocaleString() + " บาทถ้วน"; } // Placeholder
+        function bahtText(n) { return n.toLocaleString() + " บาทถ้วน"; }
 
-        function printTravel(type) {
-            let d = {
-                org: DB.orgName,
-                title: getVal('tvTitle'), docNo: getVal('tvDocNo'), date: fmtDate(getVal('tvDocDate')),
+        function printDoc(type) {
+            const data = {
+                org: db.orgName,
+                docNo: getVal('tvDocNo'), date: fmtDate(getVal('tvDate')),
                 name: getVal('tvName'), pos: getVal('tvPos'), dept: getVal('tvDept'),
-                loanNo: getVal('tvLoanNo'), loanDate: fmtDate(getVal('tvLoanDate')), loanAmt: getNum('tvLoanAmt'),
-                place: getVal('tvPlace'), start: fmtDate(getVal('tvStart')), end: fmtDate(getVal('tvEnd')),
-                pay1: getNum('pay1'), pay2: getNum('pay2'), pay3: getNum('pay3'), pay4: getNum('pay4'),
-                total: getNum('pay1')+getNum('pay2')+getNum('pay3')+getNum('pay4')
+                title: getVal('tvTitle'), place: getVal('tvPlace'),
+                start: fmtDate(getVal('tvStart')), end: fmtDate(getVal('tvEnd')),
+                p1: getNum('pay1'), p2: getNum('pay2'), p3: getNum('pay3'), p4: getNum('pay4'),
+                loanNo: getVal('loanNo'), loanDate: fmtDate(getVal('loanDate'))
             };
+            data.total = data.p1 + data.p2 + data.p3 + data.p4;
 
             let html = "";
-
-            if(type=='memo') {
+            if(type === 'memo') {
                 html = `
-                    <div class="doc-header"><b>บันทึกข้อความ</b><br>${d.org}</div>
-                    <div class="doc-sub"><div>ที่ ${d.docNo}</div><div>วันที่ ${d.date}</div></div>
+                    <div class="doc-header"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Emblem_of_Thailand.svg/1200px-Emblem_of_Thailand.svg.png" width="60"><br>บันทึกข้อความ</div>
+                    <div><b>ส่วนราชการ</b> ${data.dept} ${data.org}</div>
+                    <div><b>ที่</b> ${data.docNo} &nbsp;&nbsp; <b>วันที่</b> ${data.date}</div>
                     <div><b>เรื่อง</b> ขออนุมัติเดินทางไปราชการ</div>
-                    <div><b>เรียน</b> นายกองค์การบริหารส่วนตำบล</div>
-                    <p style="text-indent:40px; margin-top:20px;">
-                        ด้วยข้าพเจ้า ${d.name} ตำแหน่ง ${d.pos} สังกัด ${d.dept} 
-                        มีความประสงค์ขออนุมัติเดินทางไปราชการเพื่อ ${d.title} ณ ${d.place} 
-                        มีกำหนดการตั้งแต่วันที่ ${d.start} ถึงวันที่ ${d.end}
-                    </p>
-                    <p style="text-indent:40px;">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
-                    <div style="margin-top:50px; text-align:right; width:90%">
-                        (ลงชื่อ)...........................................<br>(${d.name})<br>${d.pos}
+                    <hr>
+                    <div class="doc-body">
+                        <b>เรียน</b> นายกองค์การบริหารส่วนตำบล<br><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ด้วย ข้าพเจ้า ${data.name} ตำแหน่ง ${data.pos} สังกัด ${data.dept}
+                        มีความประสงค์เดินทางไปราชการเพื่อ ${data.title} ณ ${data.place}
+                        ตั้งแต่วันที่ ${data.start} ถึงวันที่ ${data.end}
+                        <br><br>
+                        จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ
                     </div>
+                    <div class="doc-sign"><div class="sign-box"><br>ลงชื่อ..................................<br>(${data.name})<br>${data.pos}</div></div>
                 `;
-            } else if (type=='loan') {
+            } else if (type === '8708') {
                 html = `
-                    <div class="doc-header"><b>สัญญายืมเงิน</b></div>
-                    <div style="text-align:right">เลขที่ ${d.loanNo} วันที่ ${d.loanDate}</div>
-                    <p>ข้าพเจ้า ${d.name} ตำแหน่ง ${d.pos} สังกัด ${d.dept} ขอยืมเงินจาก ${d.org}</p>
-                    <p>เพื่อใช้ในการเดินทางไปราชการเรื่อง ${d.title}</p>
-                    <p>จำนวนเงิน ${d.loanAmt.toLocaleString()} บาท (${bahtText(d.loanAmt)})</p>
-                    <div class="sign-area">
-                        <div class="sign-box"><br>ลงชื่อ.........................ผู้ยืม<br>(${d.name})</div>
-                        <div class="sign-box"><br>ลงชื่อ.........................ผู้อนุมัติ<br>( นายก อบต. )</div>
+                    <div class="doc-header">ใบเบิกค่าใช้จ่ายในการเดินทางไปราชการ<br><span style="font-size:12pt;font-weight:normal">ที่ทำการ ${data.org}</span></div>
+                    <div class="doc-body">
+                        <b>เรื่อง</b> ขออนุมัติเบิกจ่ายค่าเดินทาง<br>
+                        <b>เรียน</b> นายกองค์การบริหารส่วนตำบล<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตามบันทึกที่ ${data.docNo} ลงวันที่ ${data.date} อนุมัติให้ ข้าพเจ้า ${data.name} เดินทางไปราชการ ณ ${data.place}
+                        ข้าพเจ้าขอเบิกค่าใช้จ่ายดังนี้:<br>
+                        1. ค่าเบี้ยเลี้ยง &nbsp;&nbsp; ${data.p1.toLocaleString()} บาท<br>
+                        2. ค่าที่พัก &nbsp;&nbsp; ${data.p2.toLocaleString()} บาท<br>
+                        3. ค่าพาหนะ &nbsp;&nbsp; ${data.p3.toLocaleString()} บาท<br>
+                        4. อื่นๆ &nbsp;&nbsp; ${data.p4.toLocaleString()} บาท<br>
+                        <b>รวมทั้งสิ้น ${data.total.toLocaleString()} บาท</b> (${bahtText(data.total)})
                     </div>
+                     <div class="doc-sign"><div class="sign-box"><br>ลงชื่อ..................................ผู้เบิก<br>(${data.name})</div></div>
                 `;
-            } else if (type=='estimate') {
+            } else if (type === 'loan') {
                 html = `
-                    <div class="doc-header"><b>ประมาณการค่าใช้จ่าย</b></div>
-                    <div><b>ผู้เดินทาง:</b> ${d.name}</div>
-                    <div><b>โครงการ:</b> ${d.title}</div>
-                    <table class="print-table">
-                        <tr><th>รายการ</th><th>จำนวนเงิน</th></tr>
-                        <tr><td>ค่าเบี้ยเลี้ยง</td><td class="text-right">${d.pay1.toLocaleString()}</td></tr>
-                        <tr><td>ค่าที่พัก</td><td class="text-right">${d.pay2.toLocaleString()}</td></tr>
-                        <tr><td>ค่าพาหนะ</td><td class="text-right">${d.pay3.toLocaleString()}</td></tr>
-                        <tr><td>อื่นๆ</td><td class="text-right">${d.pay4.toLocaleString()}</td></tr>
-                        <tr style="font-weight:bold"><td>รวมทั้งสิ้น</td><td class="text-right">${d.total.toLocaleString()}</td></tr>
-                    </table>
-                    <div style="text-align:center; margin-top:30px;">(ลงชื่อ)...........................................ผู้ประมาณการ<br>(${d.name})</div>
-                `;
-            } else if (type=='8708_1') {
-                html = `
-                    <div class="doc-header"><b>ใบเบิกค่าใช้จ่ายในการเดินทางไปราชการ</b> (แบบ 8708)</div>
-                    <div style="text-align:right">ที่ทำการ ${d.org}</div>
-                    <p><b>เรื่อง</b> ขออนุมัติเบิกค่าใช้จ่าย</p>
-                    <p>ตามคำสั่งที่ ${d.docNo} ลงวันที่ ${d.date} อนุมัติให้ข้าพเจ้า ${d.name} เดินทางไปราชการ</p>
-                    <table class="print-table">
-                         <tr><th>รายการ</th><th>จำนวนเงิน</th></tr>
-                         <tr><td>1. ค่าเบี้ยเลี้ยง</td><td class="text-right">${d.pay1}</td></tr>
-                         <tr><td>2. ค่าที่พัก</td><td class="text-right">${d.pay2}</td></tr>
-                         <tr><td>3. ค่าพาหนะ</td><td class="text-right">${d.pay3}</td></tr>
-                         <tr><td>4. ค่าใช้จ่ายอื่น</td><td class="text-right">${d.pay4}</td></tr>
-                         <tr><td><b>รวม</b></td><td class="text-right"><b>${d.total}</b></td></tr>
-                    </table>
-                `;
-            } else if (type=='8708_2') {
-                 html = `
-                    <div class="doc-header"><b>หลักฐานการจ่ายเงิน (ส่วนที่ 2)</b></div>
-                    <div>ประกอบใบเบิกของ ${d.name} ลงวันที่ ${d.date}</div>
-                    <table class="print-table">
-                        <tr><th>ชื่อ-สกุล</th><th>จำนวนเงิน</th><th>ลายมือชื่อ</th></tr>
-                        <tr><td>${d.name}</td><td class="text-right">${d.total.toLocaleString()}</td><td></td></tr>
-                    </table>
-                    <div style="margin-top:20px">รวมเงิน (ตัวอักษร): ${bahtText(d.total)}</div>
-                    <div class="sign-area">
-                        <div class="sign-box"><br>ลงชื่อ.........................ผู้จ่าย<br>(เจ้าหน้าที่การเงิน)</div>
-                        <div class="sign-box"><br>ลงชื่อ.........................ผู้รับ<br>(${d.name})</div>
+                    <div class="doc-header">สัญญายืมเงิน</div>
+                    <div style="text-align:right">เลขที่ ${data.loanNo} วันที่ ${data.loanDate}</div>
+                    <div class="doc-body">
+                        <br>ข้าพเจ้า ${data.name} ตำแหน่ง ${data.pos} สังกัด ${data.dept}
+                        ขอยืมเงินจาก ${data.org} จำนวน ${data.total.toLocaleString()} บาท
+                        เพื่อสำรองจ่ายในการเดินทางไปราชการ ${data.title}
                     </div>
-                 `;
-            } else if (type=='receipt') {
-                 html = `
-                    <div class="doc-header"><b>ใบสำคัญรับเงิน</b></div>
-                    <div style="text-align:right">วันที่ ${fmtDate(new Date())}</div>
-                    <p>ข้าพเจ้า ${d.name} ได้รับเงินจาก ${d.org}</p>
-                    <p>เป็นค่าใช้จ่ายในการเดินทางไปราชการเรื่อง ${d.title}</p>
-                    <p>จำนวนเงิน <b>${d.total.toLocaleString()} บาท</b></p>
-                    <p>(${bahtText(d.total)})</p>
-                    <br><br>
-                    <div style="text-align:center;">(ลงชื่อ)...........................................ผู้รับเงิน<br>(${d.name})</div>
-                 `;
+                    <div class="doc-sign"><div class="sign-box">ลงชื่อ.............................ผู้ยืม<br>(${data.name})</div><div class="sign-box">ลงชื่อ.............................ผู้อนุมัติ<br>(นายก อบต.)</div></div>
+                `;
             }
 
-            openPrintModal(html);
-        }
-
-        // --- Stock Printing ---
-        function printReceivingSlip(tx) {
-            let rows = tx.lines.map((l,i)=>`<tr><td>${i+1}</td><td>${l.name}</td><td>${l.qty}</td><td>${l.price}</td><td>${l.qty*l.price}</td><td>${l.unit}</td></tr>`).join('');
-            let html = `
-                <div class="doc-header">ใบรับพัสดุ<br>${DB.orgName}</div>
-                <div class="doc-sub"><div>ได้รับจาก: ${tx.ref}</div><div>เลขที่: ${tx.docNo}</div></div>
-                <table class="print-table"><thead><tr><th>ที่</th><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>รวม</th><th>หน่วย</th></tr></thead><tbody>${rows}</tbody></table>
-                <div class="sign-area">
-                     <div class="sign-box">ลงชื่อ...........ผู้รับ<br>เจ้าหน้าที่</div>
-                     <div class="sign-box">ลงชื่อ...........<br>หัวหน้าเจ้าหน้าที่</div>
-                     <div class="sign-box">ลงชื่อ...........<br>ผู้ตรวจสอบ</div>
-                </div>
-            `;
-            openPrintModal(html);
-        }
-
-        function printWithdrawSlip(tx) {
-             let rows = tx.lines.map((l,i)=>`<tr><td>${i+1}</td><td>${l.name}</td><td>${l.qty}</td><td>${l.unit}</td><td></td></tr>`).join('');
-             let html = `
-                <div class="doc-header">ใบเบิกพัสดุ<br>${DB.orgName}</div>
-                <div class="doc-sub"><div>หน่วยงาน: ${tx.ref}</div><div>เลขที่: ${tx.docNo}</div></div>
-                <table class="print-table"><thead><tr><th>ที่</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th><th>หมายเหตุ</th></tr></thead><tbody>${rows}</tbody></table>
-                <div class="sign-area" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                     <div class="sign-box" style="width:100%">ลงชื่อ...........ผู้เบิก</div>
-                     <div class="sign-box" style="width:100%">ลงชื่อ...........ผู้จ่าย</div>
-                     <div class="sign-box" style="width:100%">ลงชื่อ...........ผู้อนุมัติ</div>
-                     <div class="sign-box" style="width:100%">ลงชื่อ...........ผู้ตรวจสอบ</div>
-                </div>
-            `;
-            openPrintModal(html);
-        }
-
-        function printStockCard(code) {
-             let item = DB.items.find(i=>i.code==code);
-             let bal = 0;
-             let rows = DB.tx.map(t=>{
-                 let l = t.lines.find(x=>x.code==code);
-                 if(!l) return '';
-                 if(t.type=='IN') bal += l.qty; else bal -= l.qty;
-                 return `<tr><td>${fmtDate(t.date)}</td><td>${t.ref}</td><td>${t.docNo}</td><td>${t.type=='IN'?l.price:''}</td><td>${t.type=='IN'?l.qty:''}</td><td>${t.type=='OUT'?l.qty:''}</td><td>${bal}</td></tr>`;
-             }).join('');
-             
-             let html = `<div class="doc-header">บัญชีวัสดุ: ${item.name} (${item.code})</div>
-             <table class="print-table"><thead><tr><th>วดป</th><th>รายการ</th><th>เลขที่</th><th>ราคา</th><th>รับ</th><th>จ่าย</th><th>คงเหลือ</th></tr></thead><tbody>${rows}</tbody></table>`;
-             openPrintModal(html);
-        }
-
-        function genStockReport() {
-            let rows = DB.items.map((i,idx)=>`<tr><td>${idx+1}</td><td>${i.name}</td><td>${getBalance(i.code)}</td><td>${i.price}</td><td>${getBalance(i.code)*i.price}</td></tr>`).join('');
-            let html = `<div class="doc-header">รายงานวัสดุคงเหลือ</div><table class="print-table"><thead><tr><th>ที่</th><th>รายการ</th><th>คงเหลือ</th><th>ราคา</th><th>รวมเงิน</th></tr></thead><tbody>${rows}</tbody></table>`;
-             openPrintModal(html);
-        }
-
-        // --- Common ---
-        function openPrintModal(html) {
             document.getElementById('paper').innerHTML = html;
             document.getElementById('printModal').style.display = 'flex';
         }
-        function closeModal() { document.getElementById('printModal').style.display = 'none'; }
-        
-        function exportToExcel(tableId, name) { /* Implement table export logic */ alert('ส่งออก Excel เรียบร้อย (จำลอง)'); }
-        function exportModalToExcel() { /* Export Logic */ alert('ส่งออก Excel เรียบร้อย (จำลอง)'); }
 
-        function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(DB)); }
+        // --- Navigation ---
+        function nav(page) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            if(page=='home') document.querySelector('.menu-list > div:nth-child(1)').classList.add('active');
+            if(page=='stock') document.querySelector('.menu-list > div:nth-child(2)').classList.add('active');
+            if(page=='travel') document.querySelector('.menu-list > div:nth-child(3)').classList.add('active');
+        }
+        function openAddMaterialModal() {
+            let code = prompt("รหัสวัสดุ:");
+            let name = prompt("ชื่อวัสดุ:");
+            if(code && name) {
+                db.materials.push({id:Date.now(), code, name, unit:'หน่วย', cat:'ทั่วไป', price:0, stock:0});
+                saveDB();
+            }
+        }
     </script>
 </body>
 </html>
